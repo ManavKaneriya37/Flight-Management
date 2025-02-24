@@ -90,8 +90,6 @@ module.exports.getProfile = async (req, res) => {
   }
 };
 
-
-
 module.exports.getFlights = async (req, res) => {
   try {
     const { departure_id, arrival_id, outbound_date, return_date } = req.query;
