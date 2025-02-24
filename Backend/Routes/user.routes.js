@@ -38,4 +38,10 @@ router.get(
     userController.getProfile
 );
 
+router.get(
+    "/flights",
+    // authMiddleware.authUser,
+    userController.getFlights
+)
+
 module.exports = router;
