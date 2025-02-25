@@ -16,4 +16,11 @@ router.get(
     authMiddleware.authUser,
     flightController.getAirport
 );
+
+router.post(
+    "/select",
+    authMiddleware.authUser,
+    flightController.selectFlight
+)
+
 module.exports = router;
