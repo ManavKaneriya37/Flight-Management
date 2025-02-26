@@ -2,6 +2,8 @@ const { validationResult } = require("express-validator");
 const { fetchFlightsData } = require("../config/serpapi");
 const fs = require("fs");
 const path = require("path");
+const bookingModel = require("../models/booking.model");
+const flightModel = require("../models/flight.model");
 
 module.exports.getFlights = async (req, res) => {
   try {
@@ -16,7 +18,7 @@ module.exports.getFlights = async (req, res) => {
     const { bestFlights, otherFlights } = getAllFlights(rawFlightsData);
     // bestFlights.forEach((flight, index) => {
     //   res.json(flight.flights[index]);
-    // });    
+    // });
 
     res.status(200).json({ bestFlights, otherFlights });
   } catch (error) {
@@ -36,6 +38,11 @@ module.exports.getAirport = async (req, res) => {
 
 module.exports.selectFlight = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: errors.array() });
+    }
+    
     const {
       flight_id,
       airplane,
@@ -66,6 +73,79 @@ module.exports.selectFlight = async (req, res) => {
     } else {
       res.status(404).json({ message: "Flight not found" });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports.bookFlight = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ message: errors.array() });
+    }
+
+    const {
+      flight_id,
+      airline,
+      departure_id,
+      arrival_id,
+      outbound_date,
+      return_date,
+      seats,
+      passengerDetails,
+    } = req.body;
+    const rawFlightsData = await fetchFlightsData(
+      departure_id,
+      arrival_id,
+      outbound_date,
+      return_date
+    );
+    const { bestFlights, otherFlights } = getAllFlights(rawFlightsData);
+    const allFlights = [...bestFlights, ...otherFlights];
+
+    const selectedFlight = allFlights.find((flight) => {
+      return flight.flights.some(
+        (flight) =>
+          flight.flight_number === flight_id && flight.airline === airline
+      );
+    });
+
+    // res.send(selectedFlight.flights[0]);
+    if (seats !== passengerDetails.length) {
+      return res
+        .status(400)
+        .json({
+          message: "Number of passengers should match the number of seats",
+        });
+    }
+
+    const flight = new flightModel({
+      flightNumber: selectedFlight.flights[0].flight_number,
+      airline: selectedFlight.flights[0].airline,
+      departureAirport: selectedFlight.flights[0].departure_airport.name,
+      arrivalAirport: selectedFlight.flights[0].arrival_airport.name,
+      departureTime: selectedFlight.flights[0].departure_airport.time,
+      arrivalTime: selectedFlight.flights[0].arrival_airport.time,
+      price: selectedFlight.price,
+      travelClass: selectedFlight.flights[0].travel_class,
+      status: "Scheduled",
+    });
+
+    const savedFlight = await flight.save();
+
+    const booking = new bookingModel({
+      user: req.user._id,
+      flight: savedFlight._id,
+      seats: seats,
+      totalCost: selectedFlight.price * seats,
+      passengerDetails: passengerDetails,
+      status: "pending",
+    });
+    const savedBooking = await booking.save();
+
+    res.status(200).json(savedBooking);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });

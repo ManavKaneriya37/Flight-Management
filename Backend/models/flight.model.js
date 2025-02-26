@@ -4,7 +4,6 @@ const flightSchema = new mongoose.Schema({
     flightNumber: {
         type: String,
         required: true,
-        unique: true
     },
     airline: {
         type: String,
@@ -29,6 +28,10 @@ const flightSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: true
+    },
+    travelClass: {
+        type: String,
+        required: true,
     },
     status: {
         type: String,
