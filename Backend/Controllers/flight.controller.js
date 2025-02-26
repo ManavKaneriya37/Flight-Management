@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const bookingModel = require("../models/booking.model");
 const flightModel = require("../models/flight.model");
+const userModel = require("../models/user.model");
 
 module.exports.getFlights = async (req, res) => {
   try {
@@ -145,7 +146,12 @@ module.exports.bookFlight = async (req, res) => {
     });
     const savedBooking = await booking.save();
 
-    res.status(200).json(savedBooking);
+   userModel.findByIdAndUpdate(
+      req.user._id,
+      { $push: { bookings: savedBooking._id } }
+    ).exec();
+
+    return res.status(200).json(savedBooking);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });

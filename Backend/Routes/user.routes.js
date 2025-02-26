@@ -33,7 +33,7 @@ router.get(
 );
 
 router.get(
-    "/",
+    "/me",
     authMiddleware.authUser,
     userController.getProfile
 );

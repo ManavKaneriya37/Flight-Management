@@ -15,6 +15,7 @@ app.use(cookieParser());
 // routes
 app.use('/users', require('./Routes/user.routes'));
 app.use('/flights', require('./Routes/flights.routes'));
+app.use('/bookings', require('./Routes/booking.routes'));
 
 
 module.exports = app;
