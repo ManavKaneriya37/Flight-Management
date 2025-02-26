@@ -83,7 +83,11 @@ module.exports.logout = async (req, res) => {
 
 module.exports.getProfile = async (req, res) => {
   try {
-    const user = await userModel.findById(req.user._id).select("-password").populate("bookings").exec();
+    const user = await userModel
+      .findById(req.user._id)
+      .select("-password")
+      .populate("bookings")
+      .exec();
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -100,13 +104,26 @@ module.exports.getFlights = async (req, res) => {
       return_date
     );
 
-    let bestFlights = rawFlightsData.best_flights.map(flight => flight );
-    let otherFlights = rawFlightsData.other_flights.map(flight => flight );
+    let bestFlights = rawFlightsData.best_flights.map((flight) => flight);
+    let otherFlights = rawFlightsData.other_flights.map((flight) => flight);
     // bestFlights.forEach(flight => {
     //   res.json(flight.flights[0]);
     // });
-    res.status(200).json({bestFlights,otherFlights});
+    res.status(200).json({ bestFlights, otherFlights });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
+module.exports.editProfile = async (req, res) => {
+  try {
+    const { firstName, lastName, email } = req.body;
+    const user = await userModel.findByIdAndUpdate(req.user._id, {
+      firstName,
+      lastName,
+      email,
+    });
+    res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
