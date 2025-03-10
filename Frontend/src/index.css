@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/*@font-face {
+    font-family: fnt1;
+    src: url('./src/assets/Fonts/sf-pro-display_bold.ttf')
+}
+
+* {
+    font-family: "systeam-ui, -apple-system";
+}*/
+
+@font-face {
+    font-family: "FntLoad";
+    src: url("/src/assets/fonts/silkserif-regularitalic-webfont.ttf") format("truetype");
+  }
+  

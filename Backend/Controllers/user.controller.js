@@ -86,7 +86,12 @@ module.exports.getProfile = async (req, res) => {
     const user = await userModel
       .findById(req.user._id)
       .select("-password")
-      .populate("bookings")
+      .populate({
+        path: "bookings",
+        populate: {
+          path: "flight",
+        },
+      })
       .exec();
     res.status(200).json(user);
   } catch (err) {

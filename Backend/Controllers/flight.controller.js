@@ -122,6 +122,7 @@ module.exports.bookFlight = async (req, res) => {
         });
     }
 
+    // res.send(selectedFlight);
     const flight = new flightModel({
       flightNumber: selectedFlight.flights[0].flight_number,
       airline: selectedFlight.flights[0].airline,
