@@ -2,11 +2,13 @@ import React, { useState, useContext, useEffect } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import { authContext } from "../../context/authContext";
+import axios from "axios";
+import { UserDataContext } from "../../context/UserContext";
 
 function Navbar() {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const isUserLoggedIn = localStorage.getItem("token") !== "null";
-  const { user, token } = useContext(authContext);
+  const { setUser } = useContext(UserDataContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -22,6 +24,22 @@ function Navbar() {
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 500); // Add slight delay for a smooth transition
   }, []);
+
+  const handleLogout = () => {
+    axios.get(`${import.meta.env.VITE_SERVER_API_URL}/users/logout`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      if(response.status === 200) {
+        localStorage.removeItem("token");
+        setUser(null);
+        window.location.reload();
+      }
+    })
+    .catch(error => console.error(error));
+  }
 
   return (
     <header className="bg-white px-[30px] md:px-[30px]">
@@ -53,6 +71,9 @@ function Navbar() {
           </ul>
         </div> */}
         <div className="flex items-center gap-6">
+          <button onClick={handleLogout} className="border-red-400 text-sm border-[1px] cursor-pointer px-5 py-2 rounded-md hover:bg-red-500 hover:text-white duration-300 ease-in-out">
+            Logout
+          </button>
           {isUserLoggedIn ? (
             <Link to={isAdmin ? "/admin" : "/profile"}>
               <img

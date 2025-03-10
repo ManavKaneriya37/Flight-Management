@@ -37,8 +37,6 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    
     axios.post(`${import.meta.env.VITE_SERVER_API_URL}/users/login`, formData)
      .then((response) => {
         if(response.status === 200) {

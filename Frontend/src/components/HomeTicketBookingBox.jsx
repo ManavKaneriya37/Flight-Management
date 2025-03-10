@@ -1,50 +1,160 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "remixicon/fonts/remixicon.css";
+import axios from "axios";
 
 const HomeTicketBookingBox = () => {
   const navigate = useNavigate();
+  const [departure, setDeparture] = useState("");
+  const [selectedDeparture, setSelectedDeparture] = useState("");
+  let [departurePanelOpen, setDeparturePanelOpen] = useState(false);
+  const [arrival, setArrival] = useState("");
+  const [selectedArrival, setSelectedArrival] = useState("");
+  let [arrivalPanelOpen, setArrivalPanelOpen] = useState(false);
+
+  const [list, setList] = useState([]);
 
   const navToSearchPage = () => {
-    const from = document.querySelector('input[name="from"]').value;
-    const to = document.querySelector('input[name="to"]').value;
-    const departDate = document.querySelector('input[name="departDate"]').value;
     navigate(`/search`);
+  };
+
+  const handleDepartureChange = (e) => {
+    setDeparture(e.target.value);
+    if (departure.length > 0 && departure !== "") {
+      setDeparturePanelOpen(true);
+    } else {
+      setDeparturePanelOpen(false);
+    }
+
+    axios
+      .get(
+        `${import.meta.env.VITE_SERVER_API_URL}/flights/search/airports?name=${
+          e.target.value
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setList(response.data);
+        }
+      });
+  };
+
+  const handleArrivalChange = (e) => {
+    setArrival(e.target.value);
+
+    if (arrival.length > 0 && arrival !== "") {
+      setArrivalPanelOpen(true);
+    } else {
+      setArrivalPanelOpen(false);
+    }
+
+    axios
+      .get(
+        `${import.meta.env.VITE_SERVER_API_URL}/flights/search/airports?name=${
+          e.target.value
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setList(response.data);
+        }
+      });
   };
 
   return (
     <div className="py-[50px] max-w-[1400px] mx-auto">
       <div className="flex flex-col ">
-        <div className="flex gap-5 items-center justify-start mb-5">
-          <div className="flex justify-center items-center gap-2">
-            <input type="radio" name="ticketType" id="oneWay" defaultChecked />
-            <label htmlFor="oneWay">One way</label>
-          </div>
-          <div className="flex justify-center items-center gap-2">
-            <input type="radio" name="ticketType" id="return" />
-            <label htmlFor="return">Return</label>
-          </div>
-        </div>
         <div className="flex justify-between gap-5 flex-col xl:flex-row">
-          <div className="flex gap-5 border-[1px] max-w-full xl:max-w-fit border-gray-300 rounded-[20px] flex-col xl:flex-row">
-            <div className="flex flex-col p-5 pb-0 xl:pr-0">
+          <div className="relative flex gap-5 border-[1px] max-w-full xl:max-w-fit border-gray-300 rounded-[20px] flex-col xl:flex-row">
+            <div className="relative flex flex-col p-5 pb-0 xl:pr-0">
               <h1>From</h1>
               <input
                 name="from"
                 type="text"
                 placeholder="Delhi"
                 className="outline-none text-[30px] max-w-[300px]"
-                // onChange={handleFormDataChange}
+                value={departure}
+                onChange={handleDepartureChange}
               />
+              {departurePanelOpen && departure && (
+                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[35vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
+                  {list.length > 0 ? (
+                    list.map((listItem, index) => (
+                      <div
+                        onClick={() => {
+                          setDeparture(listItem.iata);
+                          setSelectedDeparture(listItem.iata);
+                          setDeparturePanelOpen(false);
+                          setList([]);
+                        }}
+                        key={index}
+                        className="flex items-center py-2 px-2 gap-2 hover:bg-gray-300 duration-300 ease cursor-pointer rounded"
+                      >
+                        <i className="ri-search-line p-1 bg-gray-300 rounded-md px-2"></i>
+                        <h1>
+                          {listItem.airport}
+                          <br />
+                          <span className="text-sm opacity-70">
+                            {listItem.name} | {listItem.iata}
+                          </span>
+                        </h1>
+                      </div>
+                    ))
+                  ) : (
+                    <h1 className="text-xl mt-2">No airport found!</h1>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="flex flex-col p-5 border-t-[1px] xl:border-l-[1px] xl:border-t-0 border-gray-300">
+            <div className="relative flex flex-col p-5 border-t-[1px] xl:border-l-[1px] xl:border-t-0 border-gray-300">
               <h1>To</h1>
               <input
                 name="to"
                 type="text"
                 placeholder="Mumbai"
                 className="outline-none text-[30px] max-w-[300px]"
+                value={arrival}
+                onChange={handleArrivalChange}
                 // onChange={handleFormDataChange}
               />
+              {arrivalPanelOpen && arrival && (
+                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[35vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
+                  {list.length > 0 ? (
+                    list.map((listItem, index) => (
+                      <div
+                        onClick={() => {
+                          setArrival(listItem.iata);
+                          setSelectedArrival(listItem.iata);
+                          setArrivalPanelOpen(false);
+                        }}
+                        key={index}
+                        className="flex items-center py-2 px-2 gap-2 hover:bg-gray-300 duration-300 ease cursor-pointer rounded"
+                      >
+                        <i className="ri-search-line p-1 bg-gray-300 rounded-md px-2"></i>
+                        <h1>
+                          {listItem.airport}
+                          <br />
+                          <span className="text-sm opacity-70">
+                            {listItem.name} | {listItem.iata}
+                          </span>
+                        </h1>
+                      </div>
+                    ))
+                  ) : (
+                    <h1 className="text-xl mt-2">No airport found!</h1>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-5 border-[1px]  border-gray-300 rounded-[20px]">
