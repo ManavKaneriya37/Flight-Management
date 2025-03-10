@@ -5,14 +5,15 @@ import Home from "../page/Home";
 import ErrorPage from "../page/ErrorPage";
 import FlightDetails from "../page/FlightDetails";
 import Navbar from "../components/Navbar/Navbar";
-import Login from '../components/Login'
-import SignupPage from '../components/signUpPage'
+import Login from "../components/Login";
+import SignupPage from "../components/SignUpPage";
+import UserProtectedWrapper from "../components/UserProtectedWrapper";
 
-import ProfilePage from '../components/Profile'
-import ConfirmBooking from '../components/confirmBookingButtonPage'
-import JourneySuccess from '../components/ConfirmLastPage'
-import PassengerDetails from '../components/PassangerDetails';
-import UpdateProfile from '../components/UpdateProfile'
+import ProfilePage from "../components/Profile";
+import ConfirmBooking from "../components/confirmBookingButtonPage";
+import JourneySuccess from "../components/ConfirmLastPage";
+import PassengerDetails from "../components/PassangerDetails";
+import UpdateProfile from "../components/UpdateProfile";
 
 const ProtectedRoute = ({ element: Element, ...rest }) => {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -26,13 +27,62 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/update-profile" element={<UpdateProfile />} />
-        <Route path="/search" element={<FlightDetails />} />
-        <Route path="/passenger-details" element={<PassengerDetails />} />
-        <Route path="/confirm-booking" element={<ConfirmBooking />} />   
-        <Route path="/journey-success" element={<JourneySuccess />} />
+        <Route
+          path="/home"
+          element={
+            <UserProtectedWrapper>
+              <Home />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <UserProtectedWrapper>
+              <ProfilePage />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/update-profile"
+          element={
+            <UserProtectedWrapper>
+              <UpdateProfile />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <UserProtectedWrapper>
+              <FlightDetails />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/passenger-details"
+          element={
+            <UserProtectedWrapper>
+              <PassengerDetails />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/confirm-booking"
+          element={
+            <UserProtectedWrapper>
+              <ConfirmBooking />
+            </UserProtectedWrapper>
+          }
+        />
+        <Route
+          path="/journey-success"
+          element={
+            <UserProtectedWrapper>
+              <JourneySuccess />
+            </UserProtectedWrapper>
+          }
+        />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
       <Footer />

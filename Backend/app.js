@@ -7,6 +7,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const connectDB = require('./Database/db');
 connectDB();
+const cors = require('cors');
+const morgan = require('morgan');
+
+app.use(morgan('tiny'));
+app.use(cors());
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

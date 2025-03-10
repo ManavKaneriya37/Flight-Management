@@ -1,14 +1,19 @@
-import { useState, useRef, useEffect } from "react";
-import {Navigate} from 'react-router-dom'
+import { useState, useRef, useEffect, useContext } from "react";
+import { useNavigate } from 'react-router-dom'
 import gsap from "gsap";
+import axios from 'axios'
+import { toast } from "react-toastify";
+import {UserDataContext} from "../context/UserContext";
 
-export default function Login({ switchToSignUp }) {
+export default function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const containerRef = useRef(null);
+  const { setUser } = useContext(UserDataContext);
 
   useEffect(() => {
     gsap.fromTo(
@@ -32,25 +37,24 @@ export default function Login({ switchToSignUp }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     
-    // If fields are filled, log data
-    console.log("Login successful", formData);
+    axios.post(`${import.meta.env.VITE_SERVER_API_URL}/users/login`, formData)
+     .then((response) => {
+        if(response.status === 200) {
+          localStorage.setItem('token', response.data.token);
+          setUser(response.data.user);
+          toast.success(response.data.message);
+          navigate('/home');
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+
     setFormData({ email: "", password: "" });
   };
 
-  const handleSwitch = () => {
-    setTimeout(() => {
-      location.href = '/signup';
-    }, 300);
-
-    gsap.to(containerRef.current, {
-      opacity: 0,
-      y: 50,
-      duration: 0.5,
-      onComplete: switchToSignUp,
-    });
-
-  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white p-4">
@@ -104,7 +108,7 @@ export default function Login({ switchToSignUp }) {
             Don't have an account?{" "}
             <span
               className="text-blue-500 hover:underline cursor-pointer"
-              onClick={handleSwitch}
+              onClick={() => navigate('/signup')}
             >
               Sign up
             </span>
