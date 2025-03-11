@@ -82,11 +82,6 @@ module.exports.selectFlight = async (req, res) => {
 
 module.exports.bookFlight = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ message: errors.array() });
-    }
-
     const {
       flight_id,
       airline,
@@ -112,15 +107,6 @@ module.exports.bookFlight = async (req, res) => {
           flight.flight_number === flight_id && flight.airline === airline
       );
     });
-
-    // res.send(selectedFlight.flights[0]);
-    if (seats !== passengerDetails.length) {
-      return res
-        .status(400)
-        .json({
-          message: "Number of passengers should match the number of seats",
-        });
-    }
 
     // res.send(selectedFlight);
     const flight = new flightModel({

@@ -1,30 +1,62 @@
 import React, { useEffect, useState } from "react";
 import gsap from "gsap";
 import ConfirmBooking from "../components/confirmBookingButtonPage"; // Import ConfirmBooking page
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios"
 
 export default function PassengerDetails() {
-  const [seats, setSeats] = useState(1); // Default to 1 seat
-  const [passengerData, setPassengerData] = useState([{ fullName: "", email: "", age: "" }]);
-  const [showConfirmPage, setShowConfirmPage] = useState(false); // For page switching
+  const [seats, setSeats] = useState(1);
+  const [passengerData, setPassengerData] = useState([
+    { fullName: "", email: "", age: "" },
+  ]);
+
+  const { state } = useLocation();
+  const flightData = state.flightData;
+  const navigate = useNavigate();
+
+  console.log(passengerData);
 
   useEffect(() => {
     // Page fade-in animation
     gsap.set(".page-container", { opacity: 0, visibility: "visible" });
-    gsap.to(".page-container", { opacity: 1, duration: 0.8, ease: "power3.out" });
+    gsap.to(".page-container", {
+      opacity: 1,
+      duration: 0.8,
+      ease: "power3.out",
+    });
 
     // Flight details animation
     gsap.set(".flight-details", { opacity: 0, y: 20 });
-    gsap.to(".flight-details", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", delay: 0.3 });
+    gsap.to(".flight-details", {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power3.out",
+      delay: 0.3,
+    });
 
     // Passenger form animation
     gsap.set(".passenger-form div", { opacity: 1, y: 0 }); // Ensure visible
-    gsap.to(".passenger-form div", { opacity: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "power3.out", delay: 0.6 });
+    gsap.to(".passenger-form div", {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      stagger: 0.2,
+      ease: "power3.out",
+      delay: 0.6,
+    });
   }, []);
 
   const handleSeatChange = (e) => {
     const numSeats = Math.max(1, parseInt(e.target.value) || 1); // Minimum 1 seat
     setSeats(numSeats);
-    setPassengerData(Array.from({ length: numSeats }, () => ({ fullName: "", email: "", age: "" })));
+    setPassengerData(
+      Array.from({ length: numSeats }, () => ({
+        fullName: "",
+        email: "",
+        age: "",
+      }))
+    );
   };
 
   const handleInputChange = (index, field, value) => {
@@ -37,8 +69,11 @@ export default function PassengerDetails() {
     e.preventDefault(); // Prevent page reload
 
     // Check if all fields are filled
-    const isIncomplete = passengerData.some(passenger => 
-      !passenger.fullName.trim() || !passenger.email.trim() || !passenger.age.trim()
+    const isIncomplete = passengerData.some(
+      (passenger) =>
+        !passenger.fullName.trim() ||
+        !passenger.email.trim() ||
+        !passenger.age.trim()
     );
 
     if (isIncomplete) {
@@ -46,12 +81,35 @@ export default function PassengerDetails() {
       return;
     }
 
-    setShowConfirmPage(true); // Switch to ConfirmBooking page
+    console.log(flightData.flights[0].flight_number, flightData.flights[0].airline, localStorage.getItem('departure_id'), localStorage.getItem('arrival_id'), localStorage.getItem('outbound_date'), localStorage.getItem('return_date'), seats,passengerData)
+
+    axios.post(`${import.meta.env.VITE_SERVER_API_URL}/flights/book`, {
+      flight_id: flightData.flights[0].flight_number,
+      airline: flightData.flights[0].airline,
+      departure_id: localStorage.getItem('departure_id'),
+      arrival_id: localStorage.getItem('arrival_id'),
+      outbound_date: localStorage.getItem('outbound_date'),
+      return_date: localStorage.getItem('return_date'),
+      seats: seats,
+      passengerDetails: passengerData,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then((response) => {
+      navigate("/confirm-booking", { state: { bookingData: response.data } });
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
   };
 
-  if (showConfirmPage) {
-    return <ConfirmBooking />;
-  }
+  const getDuration = (duration) => {
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    return `${hours}h ${minutes}m`;
+  };
 
   return (
     <div className="page-container max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
@@ -64,33 +122,73 @@ export default function PassengerDetails() {
         <div className="bg-white p-6 rounded-lg flex justify-between items-center shadow">
           <div className="text-base text-blak-700">
             <div className="grid grid-cols-3 gap-4 gap-x-20">
-              <div><strong>Departure airport </strong><br/> Airport name</div>
-              <div><strong>Arrival airport </strong><br/> Airport name</div>
-              <div><strong>Duration:</strong><br/> Duration</div>
-              <div><strong>Departure Time </strong><br/> Time</div>
-              <div><strong>Arrival Time </strong><br/> Time</div>
-              <div><strong>Price </strong><br/> Price</div>
-              <div><strong>Airline </strong><br/> Airline name</div>
-              <div><strong>Travel class </strong><br/> Class name</div>
-              <div><strong>Airline number </strong><br/> Airline number</div>
+              <div>
+                <strong>Departure airport </strong>
+                <br />
+                {flightData.flights[0].departure_airport.name}
+              </div>
+              <div>
+                <strong>Arrival airport </strong>
+                <br />
+                {flightData.flights[0].arrival_airport.name}
+              </div>
+              <div>
+                <strong>Duration:</strong>
+                <br />
+                {getDuration(flightData.flights[0].duration)}
+              </div>
+              <div>
+                <strong>Departure Time </strong>
+                <br />
+                {flightData.flights[0].departure_airport.time.split(" ")[1]}
+              </div>
+              <div>
+                <strong>Arrival Time </strong>
+                <br />
+                {flightData.flights[0].arrival_airport.time.split(" ")[1]}
+              </div>
+              <div>
+                <strong>Price </strong>
+                <br />${flightData.price}
+              </div>
+              <div>
+                <strong>Airline </strong>
+                <br /> {flightData.flights[0].airline}
+              </div>
+              <div>
+                <strong>Travel class </strong>
+                <br />
+                {flightData.flights[0].travel_class}
+              </div>
+              <div>
+                <strong>Airline number </strong>
+                <br />
+                {flightData.flights[0].flight_number}
+              </div>
             </div>
           </div>
-          <img src="AirplaneFlipped.png" alt="Airplane" className="w-72 object-contain" />
+          <img
+            src="AirplaneFlipped.png"
+            alt="Airplane"
+            className="w-72 object-contain"
+          />
         </div>
       </div>
 
       {/* Passenger Form Section */}
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold text-center mb-4">Register your flight now</h2>
+        <h2 className="text-2xl font-semibold text-center mb-4">
+          Register your flight now
+        </h2>
 
         {/* Number of Seats Input */}
         <div className="mb-4 flex items-center gap-2">
           <label className="text-gray-600">Enter seats (number):</label>
           <input
             type="number"
-            min="1"
+            defaultValue={1}
             value={seats}
-            onChange={handleSeatChange}
+            onChange={handleSeatChange} 
             className="border p-2 rounded w-16 text-center"
           />
         </div>
@@ -99,13 +197,17 @@ export default function PassengerDetails() {
         <form onSubmit={handleSubmit} className="passenger-form">
           {passengerData.map((passenger, index) => (
             <div key={index} className="bg-gray-100 p-4 rounded-lg mb-4 shadow">
-              <h3 className="font-bold text-gray-700 mb-2">Passenger {index + 1} details:</h3>
+              <h3 className="font-bold text-gray-700 mb-2">
+                Passenger {index + 1} details:
+              </h3>
               <div className="flex flex-col gap-2">
                 <input
                   type="text"
                   placeholder="Enter Full Name"
                   value={passenger.fullName}
-                  onChange={(e) => handleInputChange(index, "fullName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(index, "fullName", e.target.value)
+                  }
                   className="p-2 bg-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 w-1/2"
                   required
                 />
@@ -113,7 +215,9 @@ export default function PassengerDetails() {
                   type="email"
                   placeholder="Enter Email"
                   value={passenger.email}
-                  onChange={(e) => handleInputChange(index, "email", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(index, "email", e.target.value)
+                  }
                   className="p-2 bg-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 w-1/2"
                   required
                 />
@@ -121,7 +225,9 @@ export default function PassengerDetails() {
                   type="number"
                   placeholder="Enter Age"
                   value={passenger.age}
-                  onChange={(e) => handleInputChange(index, "age", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(index, "age", e.target.value)
+                  }
                   className="p-2 bg-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 w-1/2"
                   required
                 />
@@ -129,10 +235,10 @@ export default function PassengerDetails() {
             </div>
           ))}
 
-          {/* Submit Button */}
-          <button 
+          <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition cursor-pointer">
+            className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition cursor-pointer"
+          >
             Get your flight book
           </button>
         </form>
@@ -271,7 +377,6 @@ export default function PassengerDetails() {
 //   );
 // }
 
-
 // import React, { useEffect, useState } from "react";
 // import gsap from "gsap";
 // import ConfirmBooking from "../components/ConfirmBookingButtonPage"; // Import ConfirmBooking page
@@ -381,8 +486,8 @@ export default function PassengerDetails() {
 //         </div>
 
 //         {/* Submit Button */}
-//         <button 
-//           onClick={handleBooking} 
+//         <button
+//           onClick={handleBooking}
 //           className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition cursor-pointer"
 //         >
 //           Get your flight book

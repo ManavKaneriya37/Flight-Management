@@ -44,9 +44,15 @@
 import React, { useEffect, useState } from "react";
 import gsap from "gsap";
 import JourneySuccess from "../components/ConfirmLastPage"; // Import JourneySuccess directly
+import {useLocation, useNavigate} from "react-router-dom"
+import axios from "axios"
 
 export default function ConfirmBooking() {
-  const [confirmed, setConfirmed] = useState(false); // Track if flight is confirmed
+  const { state } = useLocation();
+  const bookingData = state.bookingData;
+  const navigate = useNavigate();
+
+  console.log(bookingData)
 
   useEffect(() => {
     gsap.set(".confirm-container", { opacity: 0, visibility: "visible" });
@@ -60,12 +66,22 @@ export default function ConfirmBooking() {
       opacity: 0,
       duration: 1.2,
       ease: "power3.inOut",
-      onComplete: () => setConfirmed(true), // Change to JourneySuccess after animation
     });
-  };
 
-  // If confirmed, replace with JourneySuccess component
-  if (confirmed) return <JourneySuccess />;
+    axios.post(`${import.meta.env.VITE_SERVER_API_URL}/bookings/confirm`, {
+      booking_id: bookingData._id
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        navigate('/journey-success')
+      }
+    })
+    
+  };
 
   return (
     <div className="confirm-container flex flex-col items-center justify-center h-screen bg-white">

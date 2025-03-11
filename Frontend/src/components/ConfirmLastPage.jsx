@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import gsap from "gsap";
+import { useNavigate } from "react-router-dom";
 
-export default function JourneySuccess({ onGoHome }) {
+
+export default function JourneySuccess() {
+  const navigate = useNavigate()
   useEffect(() => {
     // Fade-in effect for page
     gsap.fromTo(
@@ -31,7 +34,7 @@ export default function JourneySuccess({ onGoHome }) {
       {/* Go Home Button */}
       <button
         className="px-20 py-3 mt-10 bg-gray-200 text-black rounded-lg shadow-md hover:bg-gray-300 transition text-lg"
-        onClick={onGoHome} // Uses parent function
+        onClick={() => navigate('/home')}
       >
         Go to Home
       </button>

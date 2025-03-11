@@ -123,9 +123,12 @@ module.exports.getFlights = async (req, res) => {
   }
 };
 
-module.exports.editProfile = async (req, res) => {
+module.exports.updateProfile = async (req, res) => {
   try {
     const { firstName, lastName, email } = req.body;
+    if (!firstName ||!lastName ||!email) {
+      return res.status(400).json({ message: "Please provide all required fields" });
+    }
     const user = await userModel.findByIdAndUpdate(req.user._id, {
       firstName,
       lastName,

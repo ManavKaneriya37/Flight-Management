@@ -485,10 +485,12 @@
 import React, { useState, useEffect } from "react";
 import { gsap } from "gsap";
 import UpdateProfile from "../components/UpdateProfile";
+import axios from "axios"
 
 function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     gsap.fromTo(
@@ -497,6 +499,16 @@ function ProfilePage() {
       { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
     );
   }, [isUpdating]);
+
+  useEffect(() => {
+    axios.get(`${import.meta.env.VITE_SERVER_API_URL}/users/me`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+     .then((response) => setUser(response.data))
+     .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, [])
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -512,44 +524,31 @@ function ProfilePage() {
         <UpdateProfile
           onCancel={() => setIsUpdating(false)}
           setProfileImage={setProfileImage}
+          user={user}
         />
       ) : (
         <ProfileView
           onUpdateClick={() => setIsUpdating(true)}
-          profileImage={profileImage}
-          handleImageUpload={handleImageUpload}
+          user={user}
         />
       )}
     </div>
   );
 }
 
-function ProfileView({ onUpdateClick, profileImage, handleImageUpload }) {
-  const bookings = [
-    { id: 1, date: "March 5, 2025", from: "LAX", to: "JFK", seats: 2, status: "Confirmed", class: "Business" },
-    { id: 2, date: "April 10, 2025", from: "SFO", to: "ORD", seats: 1, status: "Pending", class: "Economy" },
-    { id: 3, date: "May 22, 2025", from: "MIA", to: "LHR", seats: 1, status: "Confirmed", class: "First Class" },
-  ];
-
+function ProfileView({ onUpdateClick, user }) {
   return (
     <div className="page-transition">
       <h1 className="text-2xl font-bold mb-4">SkyNest</h1>
       <div className="flex items-center justify-between pb-7">
         <div className="flex items-center gap-4">
           <label className="cursor-pointer">
-            <input type="file" className="hidden" onChange={handleImageUpload} />
-            {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
-            ) : (
-              <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
-                📷
-              </div>
-            )}
+            <img className="w-16 h-16 rounded-full" src="https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png" alt="" />
           </label>
-          <div>
-            <h2 className="text-2xl font-semibold">User Name</h2>
-            <p className="text-gray-600">email@example.com</p>
-          </div>
+          {user && <div>
+            <h2 className="text-2xl font-semibold">{user?.firstName + " " + user?.lastName}</h2>
+            <p className="text-gray-600">{user?.email}</p>
+          </div> }
         </div>
         <button
           onClick={onUpdateClick}
@@ -561,20 +560,20 @@ function ProfileView({ onUpdateClick, profileImage, handleImageUpload }) {
 
       <h3 className="mt-6 text-xl font-semibold">Your Recent Bookings</h3>
       <div className="mt-4 space-y-4">
-        {bookings.map((booking) => (
-          <div key={booking.id} className="p-4 bg-gray-200 shadow-sm rounded-md">
+        {user?.bookings?.map((booking) => (
+          <div key={booking._id} className="p-4 bg-gray-200 shadow-sm rounded-md">
             <div className="grid grid-cols-5 gap-4">
               <div>
                 <p className="text-sm text-gray-500">Booking Date</p>
-                <p className="font-medium">{booking.date}</p>
+                <p className="font-medium">{booking.bookingDate.split("T")[0]}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Departure</p>
-                <p className="font-medium">{booking.from}</p>
+                <p className="font-medium">{booking.flight.departureAirport}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Arrival</p>
-                <p className="font-medium">{booking.to}</p>
+                <p className="font-medium">{booking.flight.arrivalAirport}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Seats</p>
@@ -582,12 +581,12 @@ function ProfileView({ onUpdateClick, profileImage, handleImageUpload }) {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Status</p>
-                <p className={`font-medium ${booking.status === "Confirmed" ? "text-green-600" : "text-yellow-600"}`}>
+                <p className={`font-medium ${booking.status === "confirmed" ? "text-green-600" : "text-yellow-600"}`}>
                   {booking.status}
                 </p>
               </div>
             </div>
-            <p className="mt-2 text-sm text-gray-500">Travel Class: <span className="font-medium">{booking.class}</span></p>
+            <p className="mt-2 text-sm text-gray-500">Travel Class: <span className="font-medium">{booking.flight.travelClass}</span></p>
           </div>
         ))}
       </div>

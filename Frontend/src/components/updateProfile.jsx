@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import gsap from "gsap";
+import axios from "axios";
+import {toast} from "react-toastify"
 
-export default function UpdateProfile({ onCancel }) {
+export default function UpdateProfile({ onCancel, user }) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: user.firstName || "",
+    lastName: user.lastName || "",
+    email: user.email || "",
   });
 
   useEffect(() => {
@@ -21,18 +23,37 @@ export default function UpdateProfile({ onCancel }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Profile Updated Successfully!");
+    try {
+      axios.post(`${import.meta.env.VITE_SERVER_API_URL}/users/update`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+       .then((response) => {
+        if (response.status === 200) {
+          toast.success("Profile updated successfully!");
+          window.location.reload();
+        }
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error.message);
+      });
 
-    // Smooth exit animation before returning to profile page
-    gsap.to(".update-profile-container", {
-      opacity: 0,
-      y: 50,
-      duration: 0.5,
-      ease: "power3.in",
-      onComplete: () => onCancel(), // Call parent function to go back to ProfilePage
-    });
+
+      // Smooth exit animation before returning to profile page
+      gsap.to(".update-profile-container", {
+        opacity: 0,
+        y: 50,
+        duration: 0.5,
+        ease: "power3.in",
+        onComplete: () => onCancel(), // Call parent function to go back to ProfilePage
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error.message);
+      alert("Failed to update profile. Please try again.");
+    }
   };
 
   return (

@@ -30,17 +30,6 @@ router.post(
 
 router.post(
   "/book",
-  body("flight_id").notEmpty(),
-  body("seats").notEmpty().isNumeric().toInt().isInt({ min: 1 }),
-  body("passengerDetails").notEmpty().isArray(),
-  body("passengerDetails.*.name").notEmpty(),
-  body("passengerDetails.*.age").notEmpty(),
-  body("passengerDetails.*.email").notEmpty(),
-  body("airline").notEmpty(),
-  body("departure_id").notEmpty(),
-  body("arrival_id").notEmpty(),
-  body("outbound_date").notEmpty(),
-  body("return_date").notEmpty(),
   authMiddleware.authUser,
   flightController.bookFlight
 );

@@ -17,7 +17,6 @@ const FlightDetails = () => {
   const [selectedAirport, setSelectedAirport] = useState("");
   const { state } = useLocation();
   const { bestFlights, otherFlights } = state || {};
-  console.log(bestFlights);
 
   useEffect(() => {
     sectionRefs.current.forEach((section, index) => {

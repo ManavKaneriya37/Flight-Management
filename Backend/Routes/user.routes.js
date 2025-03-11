@@ -38,4 +38,10 @@ router.get(
     userController.getProfile
 );
 
+router.post(
+    "/update",
+    authMiddleware.authUser,
+    userController.updateProfile
+);
+
 module.exports = router;

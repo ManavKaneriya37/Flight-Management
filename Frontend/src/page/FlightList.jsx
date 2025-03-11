@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FlightList = ({ bestFlights, otherFlights }) => {
   const [selectedSection, setSelectedSection] = useState("best");
+  const navigate = useNavigate();
 
   // const flights = [
   //   {
@@ -65,6 +68,41 @@ const FlightList = ({ bestFlights, otherFlights }) => {
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
     return `${hours}h ${minutes}m`;
+  };
+
+  const manageFlightSelect = (flight_id, airplane) => {
+    const departure_id = localStorage.getItem("departure_id");
+    const arrival_id = localStorage.getItem("arrival_id");
+    const outbound_date = localStorage.getItem("outbound_date");
+    const return_date = localStorage.getItem("return_date");
+
+    axios
+      .post(
+        `${import.meta.env.VITE_SERVER_API_URL}/flights/select`,
+        {
+          flight_id,
+          airplane,
+          departure_id,
+          arrival_id,
+          outbound_date,
+          return_date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/passenger-details", {
+            state: {flightData: response.data},
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   };
 
   return (
@@ -137,7 +175,15 @@ const FlightList = ({ bestFlights, otherFlights }) => {
                       <p className="text-xl font-bold text-gray-800">
                         ${flight.price}
                       </p>
-                      <button className="border-indigo-500 border-[1px] px-12 py-2 rounded-lg hover:bg-indigo-700 hover:text-white transition duration-300 mt-2">
+                      <button
+                        onClick={() =>
+                          manageFlightSelect(
+                            flight.flights[0].flight_number,
+                            flight.flights[0].airplane
+                          )
+                        }
+                        className="border-indigo-500 border-[1px] px-12 py-2 rounded-lg hover:bg-indigo-700 hover:text-white transition duration-300 mt-2"
+                      >
                         Select Flight
                       </button>
                     </div>
@@ -198,7 +244,15 @@ const FlightList = ({ bestFlights, otherFlights }) => {
                       <p className="text-xl font-bold text-gray-800">
                         ${flight.price}
                       </p>
-                      <button className="border-indigo-500 border-[1px] px-12 py-2 rounded-lg hover:bg-indigo-700 hover:text-white transition duration-300 mt-2">
+                      <button
+                        onClick={() =>
+                          manageFlightSelect(
+                            flight.flights[0].flight_number,
+                            flight.flights[0].airplane
+                          )
+                        }
+                        className="border-indigo-500 border-[1px] px-12 py-2 rounded-lg hover:bg-indigo-700 hover:text-white transition duration-300 mt-2"
+                      >
                         Select Flight
                       </button>
                     </div>
