@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import FlightList from "./FlightList";
 import AirlinesFilter from "./AirlinesFilter";
 import FlightSearchNavbar from "./FlightSearchNavbar";
+import { useLocation } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,9 @@ const FlightDetails = () => {
   const [priceRange, setPriceRange] = useState([0, 20000]);
   const [duration, setDuration] = useState("");
   const [selectedAirport, setSelectedAirport] = useState("");
+  const { state } = useLocation();
+  const { bestFlights, otherFlights } = state || {};
+  console.log(bestFlights);
 
   useEffect(() => {
     sectionRefs.current.forEach((section, index) => {
@@ -44,7 +48,7 @@ const FlightDetails = () => {
 
         
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
-          <div ref={(el) => (sectionRefs.current[1] = el)} className="w-full lg:w-64">
+          {/* <div ref={(el) => (sectionRefs.current[1] = el)} className="w-full lg:w-64">
             <AirlinesFilter
               priceRange={priceRange}
               setPriceRange={setPriceRange}
@@ -53,14 +57,13 @@ const FlightDetails = () => {
               selectedAirport={selectedAirport}
               setSelectedAirport={setSelectedAirport}
             />
-          </div>
+          </div> */}
 
           
-          <div className="mt-[2vw] flex-1" ref={(el) => (sectionRefs.current[2] = el)}>
+          <div className="mt-[2vw] flex-1 px-20" ref={(el) => (sectionRefs.current[2] = el)}>
             <FlightList
-              priceRange={priceRange}
-              duration={duration}
-              selectedAirport={selectedAirport}
+              bestFlights={bestFlights}
+              otherFlights={otherFlights}
             />
           </div>
         </div>

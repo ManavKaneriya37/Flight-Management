@@ -37,7 +37,7 @@ const Home = () => {
       ) : (
         <>
           <Navbar />
-          <div ref={contentRef} className="transition-all">
+          <div ref={contentRef} className="transition-all overflow-hidden">
             <section className="px-[30px]">
               <HeroSection />
               <ValuesWeProvide />

@@ -2,20 +2,51 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "remixicon/fonts/remixicon.css";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const HomeTicketBookingBox = () => {
   const navigate = useNavigate();
   const [departure, setDeparture] = useState("");
-  const [selectedDeparture, setSelectedDeparture] = useState("");
-  let [departurePanelOpen, setDeparturePanelOpen] = useState(false);
+  const [departurePanelOpen, setDeparturePanelOpen] = useState(false);
   const [arrival, setArrival] = useState("");
-  const [selectedArrival, setSelectedArrival] = useState("");
   let [arrivalPanelOpen, setArrivalPanelOpen] = useState(false);
+  const [date, setDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
 
   const [list, setList] = useState([]);
 
   const navToSearchPage = () => {
-    navigate(`/search`);
+    if (!departure || !arrival || !date || !returnDate) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    localStorage.setItem("departure_id", departure);
+    localStorage.setItem("arrival_id", arrival);
+    localStorage.setItem("outbound_date", date);
+    localStorage.setItem("return_date", returnDate);
+    axios
+      .get(`${import.meta.env.VITE_SERVER_API_URL}/flights/search/data`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params: {
+          departure_id: departure,
+          arrival_id: arrival,
+          outbound_date: date,
+          return_date: returnDate,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/search", {
+            state: {
+              bestFlights: response.data.bestFlights,
+              otherFlights: response.data.otherFlights,
+            },
+          });
+        }
+      });
   };
 
   const handleDepartureChange = (e) => {
@@ -71,6 +102,13 @@ const HomeTicketBookingBox = () => {
       });
   };
 
+  const getTomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  };
+
   return (
     <div className="py-[50px] max-w-[1400px] mx-auto">
       <div className="flex flex-col ">
@@ -80,20 +118,21 @@ const HomeTicketBookingBox = () => {
               <h1>From</h1>
               <input
                 name="from"
+                autoComplete="off"
                 type="text"
                 placeholder="Delhi"
-                className="outline-none text-[30px] max-w-[300px]"
+                className="outline-none text-[30px] max-w-[250px]"
                 value={departure}
+                required
                 onChange={handleDepartureChange}
               />
               {departurePanelOpen && departure && (
-                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[35vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
+                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[20vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
                   {list.length > 0 ? (
                     list.map((listItem, index) => (
                       <div
                         onClick={() => {
                           setDeparture(listItem.iata);
-                          setSelectedDeparture(listItem.iata);
                           setDeparturePanelOpen(false);
                           setList([]);
                         }}
@@ -119,23 +158,25 @@ const HomeTicketBookingBox = () => {
             <div className="relative flex flex-col p-5 border-t-[1px] xl:border-l-[1px] xl:border-t-0 border-gray-300">
               <h1>To</h1>
               <input
+                autoComplete="off"
                 name="to"
                 type="text"
                 placeholder="Mumbai"
-                className="outline-none text-[30px] max-w-[300px]"
+                className="outline-none text-[30px] max-w-[250px]"
                 value={arrival}
+                required
                 onChange={handleArrivalChange}
                 // onChange={handleFormDataChange}
               />
               {arrivalPanelOpen && arrival && (
-                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[35vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
+                <div className="z-10 absolute min-h-[10vh] p-2 max-h-[30vh] w-[20vw] overflow-hidden overflow-y-scroll bg-neutral-100 flex flex-col top-28 rounded-lg">
                   {list.length > 0 ? (
                     list.map((listItem, index) => (
                       <div
                         onClick={() => {
                           setArrival(listItem.iata);
-                          setSelectedArrival(listItem.iata);
                           setArrivalPanelOpen(false);
+                          setList([]);
                         }}
                         key={index}
                         className="flex items-center py-2 px-2 gap-2 hover:bg-gray-300 duration-300 ease cursor-pointer rounded"
@@ -164,24 +205,24 @@ const HomeTicketBookingBox = () => {
                 name="departDate"
                 type="date"
                 className="outline-none text-[20px] sm:text-[30px] w-full"
-                // onChange={handleFormDataChange}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                min={getTomorrowDate()}
               />
             </div>
           </div>
-          <div className="flex gap-5 border-[1px] flex-1 border-gray-300 rounded-[20px] flex-col xl:flex-row">
-            <div className="flex flex-col p-5 w-full">
-              <h1>Flight Type</h1>
-              <select
-                name="flightType"
-                id="flightType"
-                className="w-full text-xl mt-3 outline-none border-none"
-                // onChange={handleFormDataChange}
-              >
-                <option value="Economy">Economy</option>
-                <option value="Premium">Premium</option>
-                <option value="Business">Business</option>
-                <option value="First">First</option>
-              </select>
+          <div className="flex gap-5 border-[1px]  border-gray-300 rounded-[20px]">
+            <div className="flex flex-col p-5">
+              <h1>Return Date</h1>
+              <input
+                name="returnDate"
+                type="date"
+                className="outline-none text-[20px] sm:text-[30px] w-full"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                required
+              />
             </div>
           </div>
         </div>

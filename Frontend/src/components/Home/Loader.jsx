@@ -62,7 +62,7 @@ const Loader = ({ onLoaded }) => {
           #loader {
             height: 100vh;
             width: 100%;
-            background-color: #111;
+            background-color: #fff;
             position: fixed;
             z-index: 999;
             top: 0;
@@ -81,7 +81,7 @@ const Loader = ({ onLoaded }) => {
 
            #loader #con h1 {
             font-size: 3vw;
-            color: whitesmoke;
+            color: #111;
             font-family: FntLoad;
             filter: drop-shadow(0vw 0vw 1.5vw rgba(255, 255, 255, 0.5));
           }
@@ -95,7 +95,7 @@ const Loader = ({ onLoaded }) => {
       </style>
       <div id="loader">
         <div id="con">
-          <h1 className="font-[FntLoad]">For Those Who Fly Above the Ordinary !!</h1>
+          <h1 className="font-[FntLoad] text-black">For Those Who Fly Above the Ordinary !!</h1>
           <img src={LoaderGif} alt="Loading" />
         </div>
       </div>
