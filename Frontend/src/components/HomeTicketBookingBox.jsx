@@ -228,7 +228,7 @@ const HomeTicketBookingBox = () => {
         </div>
       </div>
       <button
-        className="hover:bg-[#1E293B] bg-[#bebebe] text-black hover:text-white px-5 py-2 mt-5 rounded-lg transition duration-100"
+        className="hover:bg-indigo-400 bg-indigo-500 text-white px-5 py-2 mt-5 rounded-lg transition duration-100"
         onClick={navToSearchPage}
       >
         Search Flights

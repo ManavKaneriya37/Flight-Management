@@ -85,16 +85,17 @@ export default function ConfirmBooking() {
 
   return (
     <div className="confirm-container flex flex-col items-center justify-center h-screen bg-white">
-      <h1 className="text-2xl font-bold absolute top-4 left-6">SkyNest</h1>
+            <div className="font-semibold text-3xl opacity-50 mb-10 absolute top-4 left-6">EliteWings</div>
+
 
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">Just one step away to get your flight!</h2>
-        <p className="text-gray-600">Your flight is listed for you! Book the flight by confirming it.</p>
+        <h2 className="text-4xl font-bold text-indigo-800 mb-4">Just one step away to get your flight!</h2>
+        <p className="text-gray-600 opacity-85">Your flight is listed for you! Book the flight by confirming it.</p>
       </div>
 
       <button
         onClick={handleConfirmClick}
-        className="mt-6 bg-gray-200 text-black text-lg px-6 py-3 rounded-lg shadow-md hover:bg-gray-300 transition cursor-pointer"
+        className="mt-12 bg-indigo-500 text-white text-lg px-16 py-3 rounded-md shadow-md hover:bg-indigo-600 transition cursor-pointer"
       >
         Confirm the flight
       </button>

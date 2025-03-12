@@ -24,16 +24,17 @@ export default function JourneySuccess() {
   return (
     <div className="page-container flex flex-col items-center justify-center min-h-screen bg-white p-6">
       {/* Header */}
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">SkyNest</h1>
+      <div className="font-semibold text-3xl opacity-50 mb-10 absolute top-4 left-6">EliteWings</div>
+
 
       {/* Heading */}
-      <h2 className="text-4xl font-semibold text-gray-900 text-center mb-3">
+      <h2 className="text-4xl font-bold text-indigo-800 text-center mb-3 mt-32">
         Hurray! Your journey is now ready to touch the Sky!
       </h2>
 
       {/* Go Home Button */}
       <button
-        className="px-20 py-3 mt-10 bg-gray-200 text-black rounded-lg shadow-md hover:bg-gray-300 transition text-lg"
+        className="px-20 py-3 mt-10 bg-indigo-500 text-white rounded-lg shadow-md hover:bg-indigo-400 transition text-lg"
         onClick={() => navigate('/home')}
       >
         Go to Home

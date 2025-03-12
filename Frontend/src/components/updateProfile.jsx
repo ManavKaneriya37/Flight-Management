@@ -57,8 +57,8 @@ export default function UpdateProfile({ onCancel, user }) {
   };
 
   return (
-    <div className="update-profile-container max-w-lg mx-auto p-8 bg-white shadow-xl rounded-lg mt-10">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div className="update-profile-container mx-auto p-8 bg-white rounded-lg mt-10">
+      <h2 className="text-2xl font-semibold text-indigo-800 mb-6 text-center">
         Update Profile
       </h2>
 
@@ -125,7 +125,7 @@ export default function UpdateProfile({ onCancel, user }) {
 
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition cursor-pointer"
+            className="px-6 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition cursor-pointer"
           >
             Save Changes
           </button>

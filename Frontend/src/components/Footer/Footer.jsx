@@ -21,7 +21,7 @@ const Footer = () => {
   return (
     <motion.footer
       id="footer"
-      className="bg-black mt-[4vw] rounded-[2vw] ml-[2vw] mr-[2vw] text-white py-10 px-6 md:px-16"
+      className="bg-black mt-[4vw] rounded-[0.6vw] ml-[2vw] mr-[2vw] text-white py-10 px-6 md:px-16"
       initial={{ opacity: 0, y: 50 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
