@@ -6,12 +6,15 @@
     src: url('./src/assets/Fonts/sf-pro-display_bold.ttf')
 }
 
+
+
 * {
     font-family: "systeam-ui, -apple-system";
-}*/
+    }*/
 
-@font-face {
+
+/* @font-face {
     font-family: "FntLoad";
     src: url("/src/assets/fonts/silkserif-regularitalic-webfont.ttf") format("truetype");
   }
-  
+   */

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import axios from 'axios'
+import axios from "axios";
 import { toast } from "react-toastify";
-import {UserDataContext} from "../context/UserContext";
+import { UserDataContext } from "../context/UserContext";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -37,13 +37,14 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${import.meta.env.VITE_SERVER_API_URL}/users/login`, formData)
-     .then((response) => {
-        if(response.status === 200) {
-          localStorage.setItem('token', response.data.token);
+    axios
+      .post(`${import.meta.env.VITE_SERVER_API_URL}/users/login`, formData)
+      .then((response) => {
+        if (response.status === 200) {
+          localStorage.setItem("token", response.data.token);
           setUser(response.data.user);
           toast.success(response.data.message);
-          navigate('/home');
+          navigate("/home");
         }
       })
       .catch((error) => {
@@ -53,7 +54,6 @@ export default function Login() {
     setFormData({ email: "", password: "" });
   };
 
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-white p-4">
       <div
@@ -62,9 +62,15 @@ export default function Login() {
       >
         {/* Left Section */}
         <div className="md:w-1/2 p-6 flex flex-col items-center text-center">
-          <h1 className="text-4xl font-bold text-gray-900">SkyNest</h1>
-          <p className="text-gray-700 mt-2">Get set to explore the world ✈️🌍</p>
-          <img src="/Airplane.png" alt="Airplane" className="plane-img mt-4 w-64" />
+          <h1 className="text-4xl font-bold text-gray-900">EliteWings</h1>
+          <p className="text-gray-700 mt-2">
+            Get set to explore the world ✈️🌍
+          </p>
+          <img
+            src="/Airplane.png"
+            alt="Airplane"
+            className="plane-img mt-4 w-64"
+          />
         </div>
 
         {/* Right Section */}
@@ -75,6 +81,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
+                autoComplete="off"
                 type="email"
                 name="email"
                 placeholder="Email"
@@ -86,6 +93,7 @@ export default function Login() {
             </div>
             <div>
               <input
+                autoComplete="off"
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -106,7 +114,7 @@ export default function Login() {
             Don't have an account?{" "}
             <span
               className="text-blue-500 hover:underline cursor-pointer"
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate("/signup")}
             >
               Sign up
             </span>

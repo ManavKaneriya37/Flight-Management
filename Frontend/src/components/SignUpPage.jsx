@@ -3,7 +3,7 @@ import gsap from "gsap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {UserDataContext} from "../context/UserContext";
+import { UserDataContext } from "../context/UserContext";
 
 export default function SignUp() {
   const [errors, setErrors] = useState({});
@@ -28,13 +28,13 @@ export default function SignUp() {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.currentTarget));
 
-    console.log(formData)
+    console.log(formData);
 
     axios
       .post(`${import.meta.env.VITE_SERVER_API_URL}/users/register`, formData)
       .then((response) => {
         if (response.status === 201) {
-          localStorage.setItem('token', response.data.token);
+          localStorage.setItem("token", response.data.token);
           setUser(response.data.user);
           toast.success(response.data.message);
           navigate("/");
@@ -50,7 +50,7 @@ export default function SignUp() {
       <div className="signup-box flex flex-col md:flex-row items-center max-w-4xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Left Section */}
         <div className="md:w-1/2 p-6 flex flex-col items-center text-center">
-          <h1 className="text-4xl font-bold text-gray-900">SkyNest</h1>
+          <h1 className="text-4xl font-bold text-gray-900">EliteWings</h1>
           <p className="text-gray-700 mt-2">
             SkyNest – Your Journey, Our Wings! ✈️🌍
           </p>
@@ -68,6 +68,7 @@ export default function SignUp() {
           </h2>
           <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
             <input
+              autoComplete="off"
               name="firstName"
               type="text"
               placeholder="First name"
@@ -75,6 +76,7 @@ export default function SignUp() {
               required
             />
             <input
+              autoComplete="off"
               name="lastName"
               type="text"
               placeholder="Last name"
@@ -83,12 +85,14 @@ export default function SignUp() {
             />
             <input
               name="email"
+              autoComplete="off"
               type="email"
               placeholder="Email"
               className="w-full p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-400"
               required
             />
             <input
+              autoComplete="off"
               name="password"
               type="password"
               placeholder="Password"
@@ -106,7 +110,7 @@ export default function SignUp() {
             Already have an account?{" "}
             <span
               className="text-blue-500 hover:underline cursor-pointer"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
             >
               Sign in
             </span>
