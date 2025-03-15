@@ -21,18 +21,22 @@ const Loader = ({ onLoaded }) => {
     tl.from("#loader #con h1", {
       opacity: 0,
       delay: 0.5,
-      duration: 3,
+      duration: 2.5,
       fontFamily: FntLoad,
       onStart: function () {
         if (window.jQuery) {
-          window.jQuery("h1").textillate({ in: { effect: "fadeIn" } });
+          window.jQuery("h1").lettering();
+
+          window.jQuery("h1").textillate({
+            in: { effect: "fadeIn", type: "char" },
+          });
         }
       },
     });
 
     tl.from("#loader #con img", {
       opacity: 0,
-      delay: 0.30,
+      delay: 0.3,
       duration: 3.1,
     });
 
@@ -92,7 +96,9 @@ const Loader = ({ onLoaded }) => {
       </style>
       <div id="loader">
         <div id="con">
-          <h1 className="text-black">For Those Who Fly Above the Ordinary !!</h1>
+          <h1 className="text-black">
+            For Those Who Fly Above the Ordinary !!
+          </h1>
           <img src={LoaderGif} alt="Loading" />
         </div>
       </div>

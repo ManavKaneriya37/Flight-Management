@@ -19,6 +19,8 @@
     "axios": "^1.7.9",
     "framer-motion": "^11.3.19",
     "gsap": "^3.12.5",
+    "jquery": "^3.7.1",
+    "lettering": "^0.4.1",
     "locomotive-scroll": "^5.0.0-beta.13",
     "lucide-react": "^0.477.0",
     "react": "^18.2.0",
@@ -32,6 +34,7 @@
     "remixicon": "^4.6.0",
     "stripe": "^17.7.0",
     "swiper": "^11.2.5",
+    "textillate": "^0.4.1",
     "three": "^0.167.1"
   },
   "devDependencies": {
