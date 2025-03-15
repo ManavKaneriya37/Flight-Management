@@ -58,7 +58,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-white p-4">
       <div
         ref={containerRef}
-        className="login-box flex flex-col md:flex-row items-center max-w-4xl w-full bg-white py-20 px-10 shadow-lg rounded-lg overflow-hidden"
+        className="login-box flex flex-col md:flex-row items-center max-w-4xl w-full bg-white py-20 px-10 rounded-lg overflow-hidden"
       >
         {/* Left Section */}
         <div className="md:w-1/2 p-6 flex flex-col items-center text-center">
@@ -74,7 +74,7 @@ export default function Login() {
         </div>
 
         {/* Right Section */}
-        <div className="md:w-1/2 bg-gray-100/40 p-12 rounded-md">
+        <div className="md:w-1/2 bg-gray-100 rounded-lg p-12">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 opacity-60">
             Once again, Get ready to feel the sky!!
           </h2>

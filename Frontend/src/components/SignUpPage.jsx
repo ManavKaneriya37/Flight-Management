@@ -47,7 +47,7 @@ export default function SignUp() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white p-4">
-      <div className="signup-box flex flex-col md:flex-row items-center max-w-4xl w-full bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="signup-box flex flex-col md:flex-row items-center max-w-4xl w-full bg-white rounded-lg overflow-hidden">
         {/* Left Section */}
         <div className="md:w-1/2 p-6 flex flex-col items-center text-center">
           <h1 className="text-4xl font-bold text-gray-900">EliteWings</h1>
@@ -62,7 +62,7 @@ export default function SignUp() {
         </div>
 
         {/* Right Section */}
-        <div className="md:w-1/2 p-8 bg-gray-100">
+        <div className="md:w-1/2 p-8 bg-gray-100 rounded-lg">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 opacity-60">
             Register yourself to experience sky!
           </h2>
@@ -101,7 +101,7 @@ export default function SignUp() {
             />
             <button
               type="submit"
-              className="w-full p-3 bg-white border border-gray-700 rounded-lg text-gray-800 font-semibold hover:bg-gray-100 transition transform hover:scale-105 hover:shadow-lg cursor-pointer"
+              className="w-full p-3 bg-white border rounded-lg text-gray-800 font-semibold duration-300 ease hover:bg-neutral-100/20 hover:shadow-lg cursor-pointer"
             >
               Sign up
             </button>
