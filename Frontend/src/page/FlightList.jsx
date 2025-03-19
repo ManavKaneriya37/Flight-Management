@@ -136,8 +136,8 @@ const FlightList = ({ bestFlights, otherFlights }) => {
             Best Flights for you
           </h2>
           <div className="space-y-4">
-            {bestFlights.length > 0 ? (
-              bestFlights.map((flight, index) => (
+            {bestFlights?.length > 0 ? (
+              bestFlights?.map((flight, index) => (
                 <motion.div
                   key={index}
                   whileHover={{ scale: 1.02 }}

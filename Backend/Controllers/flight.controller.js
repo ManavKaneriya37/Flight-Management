@@ -146,8 +146,8 @@ module.exports.bookFlight = async (req, res) => {
 };
 
 const getAllFlights = (raw) => {
-  let bestFlights = raw.best_flights.map((flight) => flight);
-  let otherFlights = raw.other_flights.map((flight) => flight);
+  let bestFlights = raw.best_flights?.map((flight) => flight);
+  let otherFlights = raw.other_flights?.map((flight) => flight);
   return { bestFlights, otherFlights };
 };
 
