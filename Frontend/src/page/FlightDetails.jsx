@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import FlightList from "./FlightList";
 import AirlinesFilter from "./AirlinesFilter";
 import FlightSearchNavbar from "./FlightSearchNavbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +17,7 @@ const FlightDetails = () => {
   const [selectedAirport, setSelectedAirport] = useState("");
   const { state } = useLocation();
   const { bestFlights, otherFlights } = state || {};
+  const navigate = useNavigate();
 
   useEffect(() => {
     sectionRefs.current.forEach((section, index) => {
@@ -44,7 +45,7 @@ const FlightDetails = () => {
         <div  className="mb-[2vw]" ref={(el) => (sectionRefs.current[0] = el)}>
           <FlightSearchNavbar />
         </div>
-
+        <div onClick={()=>navigate("/home")} className="my-10 flex items-center gap-3 cursor-pointer opacity-65"><i class="ri-arrow-left-line text-2xl "></i>Home</div>
         
         <div className="flex flex-col lg:flex-row gap-6 mt-6">
           {/* <div ref={(el) => (sectionRefs.current[1] = el)} className="w-full lg:w-64">

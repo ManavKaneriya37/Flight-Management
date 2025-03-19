@@ -28,7 +28,6 @@ export default function SignUp() {
     e.preventDefault();
     const formData = Object.fromEntries(new FormData(e.currentTarget));
 
-    console.log(formData);
 
     axios
       .post(`${import.meta.env.VITE_SERVER_API_URL}/users/register`, formData)

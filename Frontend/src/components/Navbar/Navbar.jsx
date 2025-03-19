@@ -51,25 +51,6 @@ function Navbar() {
         <Link to={"/"}>
           <div className="font-bold text-3xl">EliteWings</div>
         </Link>
-        {/* <div
-          className={`nav-links duration-500 md:static absolute bg-white md:min-h-fit min-h-[60vh] left-0 ${
-            menuOpen ? "top-[8%]" : "top-[-100%]"
-          } md:w-auto w-full flex items-center px-5 z-[10]`}
-        >
-          <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8">
-            <li>
-              <Link to={"/search"} className="hover:text-gray-500">
-                Search Flights
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-gray-500">Search hotels</Link>
-            </li>
-            <li>
-              <Link className="hover:text-gray-500">Contact us</Link>
-            </li>
-          </ul>
-        </div> */}
         <div className="flex items-center gap-6">
           <button onClick={handleLogout} className="border-red-400 text-sm border-[1px] cursor-pointer px-5 py-2 rounded-md hover:bg-red-500 hover:text-white duration-300 ease-in-out">
             Logout
